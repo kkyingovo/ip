@@ -13,16 +13,26 @@ public class Nicola {
 
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
+        String[] tasks = new String[100];
+        int taskCount = 0;
 
         while (!input.equals("bye")) {
-            System.out.println(LINE);
-            System.out.println(" " + input);
+            if (input.equals("list")){
+                for(int i = 0; i < taskCount; i++){
+                    System.out.println(" " + (i+1) + ". " + tasks[i]);
+                }
+            }else{
+                tasks[taskCount] = input;
+                taskCount++;
+                System.out.println(" new task added: " + input);
+            }
+
             System.out.println(LINE);
             input = scanner.nextLine();
         }
 
         System.out.println(LINE);
-        System.out.println(" Bye. Hope to see you again soon!");
+        System.out.println(" Bye. Hope to see you again. ");
         System.out.println(LINE);
     }
 }
