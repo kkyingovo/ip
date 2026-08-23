@@ -122,6 +122,36 @@ public class Nicola {
             }}catch(NumberFormatException e){
                     System.out.println("Please input a valid number.");
                 }
+            }else if(input.equals("delete")){
+                System.out.println("Please give me a task number, dear.");
+
+            }else if(input.startsWith("delete ")){
+                try{
+                    int index = Integer.parseInt(input.substring(7));
+
+                    if (index < 1 || index > taskCount) {
+                        System.out.println("The number has yet to be assigned a task.");
+
+                    } else {
+                        String deletedTask = tasks[index-1];
+                        String deletedType = taskTypes[index-1];
+                        boolean deletedDone = isDone[index-1];
+
+                        for (int i = index - 1; i < taskCount - 1; i++) {
+                            tasks[i] = tasks[i + 1];
+                            taskTypes[i] = taskTypes[i + 1];
+                            isDone[i] = isDone[i + 1];
+                        }
+
+                        taskCount--;
+                        String status = deletedDone ? "X" : " ";
+                        System.out.println("Babe, I've deleted the task.");
+                        System.out.println("  [" + deletedType + "][" + status + "] " + deletedTask);
+                        System.out.println("Now you have " + taskCount + " tasks in your list.");
+                }}catch(NumberFormatException e){
+                    System.out.println("Please give me a valid task number, dear.");
+                    }
+
             }else{
                 System.out.println(" Sorry darling, I don't understand that.");
             }
@@ -131,7 +161,7 @@ public class Nicola {
         }
 
         System.out.println(LINE);
-        System.out.println(" Bye. Hope to see you again. ");
+        System.out.println(" Bye. I'll miss you. ");
         System.out.println(LINE);
     }
 }
