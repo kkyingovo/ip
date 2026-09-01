@@ -14,9 +14,9 @@ import java.util.Scanner;
  * A simple chatbot that greets the user, echoes commands, and exits on "bye".
  */
 public class Nicola {
-    private static final String LINE = "_______^_^___________________________________________________";
     private static final Path DATA_FILE = Paths.get("data", "nicola.txt");
     private static final int MAX_TASKS = 100;
+    private static final Ui ui = new Ui();
 
     private static final DateTimeFormatter INPUT_DATE =
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
@@ -28,15 +28,12 @@ public class Nicola {
             DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
 
     public static void main(String[] args) {
-        System.out.println("Hello, this is Nicola.");
-        System.out.println("How can I help you?");
-        System.out.println(LINE);
+        ui.showWelcome();
 
-        Scanner scanner = new Scanner(System.in);
         List<Task> tasks = loadTasks();
 
-        while(scanner.hasNextLine()){
-            String input = scanner.nextLine().trim();
+        while(ui.hasNextCommand()){
+            String input = ui.readCommand();
 
             if (input.equals("bye")) {
                 break;
@@ -70,13 +67,12 @@ public class Nicola {
                 System.out.println("Sorry darling, I don't understand that.");
             }
 
-            System.out.println(LINE);
+            ui.showLine();
             saveTasks(tasks);
         }
 
-        System.out.println(LINE);
-        System.out.println("Bye. I'll miss you.");
-        System.out.println(LINE);
+        ui.showLine();
+        ui.showGoodbye();
     }
 
     private static void listTasks(List<Task> tasks){
@@ -261,10 +257,14 @@ public class Nicola {
                         tasks.add(task);
                     }
                 } else if (type.equals("E")) {
-                    if (parts.length >= 5) {
+                    if (parts.length >= 5
+                            && !parts[3].trim().isEmpty()
+                            && !parts[4].trim().isEmpty()) {
+
                         String description = parts[2].trim();
                         LocalDateTime from = LocalDateTime.parse(parts[3].trim());
                         LocalDateTime to = LocalDateTime.parse(parts[4].trim());
+
                         EventTask task = new EventTask(description, from, to);
                         task.setDone(done);
                         tasks.add(task);
@@ -293,124 +293,6 @@ public class Nicola {
             Files.write(DATA_FILE, content.toString().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             System.out.println("Could not save tasks.");
-        }
-    }
-
-    private abstract static class Task{
-        private final String description;
-        private boolean done;
-
-        Task(String description) {
-            this.description = description;
-        }
-
-        void setDone(boolean done) {
-            this.done = done;
-        }
-
-        boolean isDone() {
-            return done;
-        }
-
-        String getDescription() {
-            return description;
-        }
-
-        String formatForList() {
-            return "[" + getType() + "][" + (done ? "X" : " ") + "] " + getDisplayText();
-        }
-
-        abstract String getType();
-
-        abstract String getDisplayText();
-
-        abstract String serialize();
-    }
-
-    private static class TodoTask extends Task{
-        TodoTask(String description) {
-            super(description);
-        }
-
-        @Override
-        String getType() {
-            return "T";
-        }
-
-        @Override
-        String getDisplayText() {
-            return getDescription();
-        }
-
-        @Override
-        String serialize() {
-            return "T | " + (isDone() ? "1" : "0") + " | " + getDescription();
-        }
-    }
-    private static class DeadlineTask extends Task{
-        private final LocalDate byDate;
-        private final LocalDateTime byDateTime;
-        private final String rawInput;
-
-        DeadlineTask(String description, LocalDate byDate, LocalDateTime byDateTime, String rawInput) {
-            super(description);
-            this.byDate = byDate;
-            this.byDateTime = byDateTime;
-            this.rawInput = rawInput;
-        }
-
-        @Override
-        String getType() {
-            return "D";
-        }
-
-        @Override
-        String getDisplayText() {
-            if (byDateTime != null) {
-                return getDescription() + " (by: " + byDateTime.format(DISPLAY_DATE_TIME) + ")";
-            }
-            if (byDate != null) {
-                return getDescription() + " (by: " + byDate.format(DISPLAY_DATE) + ")";
-            }
-            return getDescription() + " (by: " + rawInput + ")";
-        }
-
-        @Override
-        String serialize() {
-            if (byDateTime != null) {
-                return "D | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                        + " |  | 1 | " + byDateTime;
-            }
-            return "D | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                    + " | " + byDate + " | 0 | ";
-        }
-    }
-
-    private static class EventTask extends Task{
-        private final LocalDateTime from;
-        private final LocalDateTime to;
-
-        EventTask(String description, LocalDateTime from, LocalDateTime to) {
-            super(description);
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        String getType() {
-            return "E";
-        }
-
-        @Override
-        String getDisplayText() {
-            return getDescription() + " (from: " + from.format(DISPLAY_DATE_TIME)
-                    + " to: " + to.format(DISPLAY_DATE_TIME) + ")";
-        }
-
-        @Override
-        String serialize() {
-            return "E | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                    + " | " + from + " | " + to;
         }
     }
 }
