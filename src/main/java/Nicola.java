@@ -14,9 +14,9 @@ import java.util.Scanner;
  * A simple chatbot that greets the user, echoes commands, and exits on "bye".
  */
 public class Nicola {
-    private static final String LINE = "_______^_^___________________________________________________";
-    private static final Path DATA_FILE = Paths.get("data", "nicola.txt");
-    private static final int MAX_TASKS = 100;
+    private static final Ui ui = new Ui();
+    private static final Storage storage = new Storage("data/nicola.txt");
+    private static final Parser parser = new Parser();
 
     private static final DateTimeFormatter INPUT_DATE =
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
@@ -28,70 +28,80 @@ public class Nicola {
             DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
 
     public static void main(String[] args) {
-        System.out.println("Hello, this is Nicola.");
-        System.out.println("How can I help you?");
-        System.out.println(LINE);
+        ui.showWelcome();
 
-        Scanner scanner = new Scanner(System.in);
-        List<Task> tasks = loadTasks();
+        TaskList tasks = new TaskList(storage.loadTasks());
 
-        while(scanner.hasNextLine()){
-            String input = scanner.nextLine().trim();
+        while(ui.hasNextCommand()){
+            String input = ui.readCommand();
+            String command = parser.getCommandWord(input);
+            String details = parser.getDetails(input);
 
-            if (input.equals("bye")) {
+            if (command.equals("bye")) {
                 break;
-            } else if (input.equals("list")) {
+            } else if (command.equals("list")) {
                 listTasks(tasks);
-            } else if (input.equals("todo")) {
-                System.out.println("Darling, the todo cannot be empty.");
-            } else if (input.startsWith("todo ")) {
-                addTodo(tasks, input.substring(5));
-            } else if (input.equals("deadline")) {
-                System.out.println("Darling, the deadline cannot be empty.");
-            } else if (input.startsWith("deadline ")) {
-                addDeadline(tasks, input.substring(9));
-            } else if (input.equals("event")) {
-                System.out.println("Darling, the event cannot be empty.");
-            } else if (input.startsWith("event ")) {
-                addEvent(tasks, input.substring(6));
-            } else if (input.equals("mark")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("mark ")) {
-                markTask(tasks, input.substring(5), true);
-            } else if (input.equals("unmark")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("unmark ")) {
-                markTask(tasks, input.substring(7), false);
-            } else if (input.equals("delete")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("delete ")) {
-                deleteTask(tasks, input.substring(7));
+            } else if (command.equals("todo")) {
+                if(details.isBlank()){
+                    System.out.println("Darling, the todo cannot be empty.");
+                }else{
+                    addTodo(tasks, details);
+                }
+            } else if (command.equals("deadline")) {
+                if(details.isBlank()){
+                    System.out.println("Darling, the deadline cannot be empty.");
+                }else {
+                    addDeadline(tasks, details);
+                }
+            } else if (command.equals("event")) {
+                if(details.isBlank()) {
+                    System.out.println("Darling, the event cannot be empty.");
+                }else {
+                    addEvent(tasks, details);
+                }
+            } else if (command.equals("mark")) {
+                if(details.isBlank()){
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    markTask(tasks, details, true);
+                }
+            } else if (command.equals("unmark")) {
+                if(details.isBlank()) {
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    markTask(tasks, details, false);
+                }
+            } else if (command.equals("delete")) {
+                if(details.isBlank()) {
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    deleteTask(tasks, details);
+                }
             } else {
                 System.out.println("Sorry darling, I don't understand that.");
             }
 
-            System.out.println(LINE);
-            saveTasks(tasks);
+            ui.showLine();
+            storage.saveTasks(tasks.getTasks());
         }
 
-        System.out.println(LINE);
-        System.out.println("Bye. I'll miss you.");
-        System.out.println(LINE);
+        ui.showLine();
+        ui.showGoodbye();
     }
 
-    private static void listTasks(List<Task> tasks){
+    private static void listTasks(TaskList tasks){
         System.out.println("Here are your tasks babe.");
         for(int i = 0; i < tasks.size(); i++){
             System.out.println(" " + (i + 1) + "." + tasks.get(i).formatForList());
         }
     }
 
-    private static void addTodo(List<Task> tasks, String description){
+    private static void addTodo(TaskList tasks, String description){
         if(description.isBlank()){
             System.out.println("Darling, the todo cannot be empty.");
             return;
         }
-        if(tasks.size() >= MAX_TASKS){
+        if(tasks.isFull()){
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -102,8 +112,8 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void addDeadline(List<Task> tasks, String payload){
-        if (tasks.size() >= MAX_TASKS) {
+    private static void addDeadline(TaskList tasks, String payload){
+        if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -137,8 +147,8 @@ public class Nicola {
         }
 
 
-    private static void addEvent(List<Task> tasks, String payload){
-        if (tasks.size() >= MAX_TASKS) {
+    private static void addEvent(TaskList tasks, String payload){
+        if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -170,7 +180,7 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void markTask(List<Task> tasks, String text, boolean done){
+    private static void markTask(TaskList tasks, String text, boolean done){
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
@@ -190,7 +200,7 @@ public class Nicola {
         }
     }
 
-    private static void deleteTask(List<Task> tasks, String text){
+    private static void deleteTask(TaskList tasks, String text){
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
@@ -223,196 +233,6 @@ public class Nicola {
         }
     }
 
-    private static List<Task> loadTasks(){
-        List<Task> tasks = new ArrayList<>();
-
-        if (!Files.exists(DATA_FILE)) {
-            return tasks;
-        }
-
-        try {
-            List<String> lines = Files.readAllLines(DATA_FILE, StandardCharsets.UTF_8);
-
-            for (String line : lines) {
-                String[] parts = line.split("\\|", -1);
-                if (parts.length < 3) {
-                    continue;
-                }
-
-                String type = parts[0].trim();
-                boolean done = parts[1].trim().equals("1");
-
-                if (type.equals("T")) {
-                    TodoTask task = new TodoTask(parts[2].trim());
-                    task.setDone(done);
-                    tasks.add(task);
-                } else if (type.equals("D")) {
-                    String description = parts[2].trim();
-
-                    if (parts.length >= 6 && parts[4].trim().equals("1")) {
-                        LocalDateTime dateTime = LocalDateTime.parse(parts[5].trim());
-                        DeadlineTask task = new DeadlineTask(description, null, dateTime, parts[5].trim());
-                        task.setDone(done);
-                        tasks.add(task);
-                    } else if (parts.length >= 4) {
-                        LocalDate date = LocalDate.parse(parts[3].trim());
-                        DeadlineTask task = new DeadlineTask(description, date, null, parts[3].trim());
-                        task.setDone(done);
-                        tasks.add(task);
-                    }
-                } else if (type.equals("E")) {
-                    if (parts.length >= 5) {
-                        String description = parts[2].trim();
-                        LocalDateTime from = LocalDateTime.parse(parts[3].trim());
-                        LocalDateTime to = LocalDateTime.parse(parts[4].trim());
-                        EventTask task = new EventTask(description, from, to);
-                        task.setDone(done);
-                        tasks.add(task);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Could not load saved tasks.");
-        }
-
-        return tasks;
-    }
-
-    private static void saveTasks(List<Task> tasks){
-        try {
-            Path parent = DATA_FILE.getParent();
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
-
-            StringBuilder content = new StringBuilder();
-            for (Task task : tasks) {
-                content.append(task.serialize()).append(System.lineSeparator());
-            }
-
-            Files.write(DATA_FILE, content.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            System.out.println("Could not save tasks.");
-        }
-    }
-
-    private abstract static class Task{
-        private final String description;
-        private boolean done;
-
-        Task(String description) {
-            this.description = description;
-        }
-
-        void setDone(boolean done) {
-            this.done = done;
-        }
-
-        boolean isDone() {
-            return done;
-        }
-
-        String getDescription() {
-            return description;
-        }
-
-        String formatForList() {
-            return "[" + getType() + "][" + (done ? "X" : " ") + "] " + getDisplayText();
-        }
-
-        abstract String getType();
-
-        abstract String getDisplayText();
-
-        abstract String serialize();
-    }
-
-    private static class TodoTask extends Task{
-        TodoTask(String description) {
-            super(description);
-        }
-
-        @Override
-        String getType() {
-            return "T";
-        }
-
-        @Override
-        String getDisplayText() {
-            return getDescription();
-        }
-
-        @Override
-        String serialize() {
-            return "T | " + (isDone() ? "1" : "0") + " | " + getDescription();
-        }
-    }
-    private static class DeadlineTask extends Task{
-        private final LocalDate byDate;
-        private final LocalDateTime byDateTime;
-        private final String rawInput;
-
-        DeadlineTask(String description, LocalDate byDate, LocalDateTime byDateTime, String rawInput) {
-            super(description);
-            this.byDate = byDate;
-            this.byDateTime = byDateTime;
-            this.rawInput = rawInput;
-        }
-
-        @Override
-        String getType() {
-            return "D";
-        }
-
-        @Override
-        String getDisplayText() {
-            if (byDateTime != null) {
-                return getDescription() + " (by: " + byDateTime.format(DISPLAY_DATE_TIME) + ")";
-            }
-            if (byDate != null) {
-                return getDescription() + " (by: " + byDate.format(DISPLAY_DATE) + ")";
-            }
-            return getDescription() + " (by: " + rawInput + ")";
-        }
-
-        @Override
-        String serialize() {
-            if (byDateTime != null) {
-                return "D | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                        + " |  | 1 | " + byDateTime;
-            }
-            return "D | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                    + " | " + byDate + " | 0 | ";
-        }
-    }
-
-    private static class EventTask extends Task{
-        private final LocalDateTime from;
-        private final LocalDateTime to;
-
-        EventTask(String description, LocalDateTime from, LocalDateTime to) {
-            super(description);
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        String getType() {
-            return "E";
-        }
-
-        @Override
-        String getDisplayText() {
-            return getDescription() + " (from: " + from.format(DISPLAY_DATE_TIME)
-                    + " to: " + to.format(DISPLAY_DATE_TIME) + ")";
-        }
-
-        @Override
-        String serialize() {
-            return "E | " + (isDone() ? "1" : "0") + " | " + getDescription()
-                    + " | " + from + " | " + to;
-        }
-    }
 }
 
 
