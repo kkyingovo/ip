@@ -15,7 +15,7 @@ import java.util.Scanner;
  */
 public class Nicola {
     private static final Ui ui = new Ui();
-    private static final Storage storage = new Storage("data/micola.txt");
+    private static final Storage storage = new Storage("data/nicola.txt");
     private static final Parser parser = new Parser();
 
     private static final DateTimeFormatter INPUT_DATE =
