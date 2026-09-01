@@ -14,9 +14,9 @@ import java.util.Scanner;
  * A simple chatbot that greets the user, echoes commands, and exits on "bye".
  */
 public class Nicola {
-    private static final Path DATA_FILE = Paths.get("data", "nicola.txt");
     private static final int MAX_TASKS = 100;
     private static final Ui ui = new Ui();
+    private static final Storage storage = new Storage("data/micola.txt");
 
     private static final DateTimeFormatter INPUT_DATE =
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
@@ -30,7 +30,7 @@ public class Nicola {
     public static void main(String[] args) {
         ui.showWelcome();
 
-        List<Task> tasks = loadTasks();
+        List<Task> tasks = storage.loadTasks();
 
         while(ui.hasNextCommand()){
             String input = ui.readCommand();
@@ -68,7 +68,7 @@ public class Nicola {
             }
 
             ui.showLine();
-            saveTasks(tasks);
+            storage.saveTasks(tasks);
         }
 
         ui.showLine();
@@ -219,82 +219,6 @@ public class Nicola {
         }
     }
 
-    private static List<Task> loadTasks(){
-        List<Task> tasks = new ArrayList<>();
-
-        if (!Files.exists(DATA_FILE)) {
-            return tasks;
-        }
-
-        try {
-            List<String> lines = Files.readAllLines(DATA_FILE, StandardCharsets.UTF_8);
-
-            for (String line : lines) {
-                String[] parts = line.split("\\|", -1);
-                if (parts.length < 3) {
-                    continue;
-                }
-
-                String type = parts[0].trim();
-                boolean done = parts[1].trim().equals("1");
-
-                if (type.equals("T")) {
-                    TodoTask task = new TodoTask(parts[2].trim());
-                    task.setDone(done);
-                    tasks.add(task);
-                } else if (type.equals("D")) {
-                    String description = parts[2].trim();
-
-                    if (parts.length >= 6 && parts[4].trim().equals("1")) {
-                        LocalDateTime dateTime = LocalDateTime.parse(parts[5].trim());
-                        DeadlineTask task = new DeadlineTask(description, null, dateTime, parts[5].trim());
-                        task.setDone(done);
-                        tasks.add(task);
-                    } else if (parts.length >= 4) {
-                        LocalDate date = LocalDate.parse(parts[3].trim());
-                        DeadlineTask task = new DeadlineTask(description, date, null, parts[3].trim());
-                        task.setDone(done);
-                        tasks.add(task);
-                    }
-                } else if (type.equals("E")) {
-                    if (parts.length >= 5
-                            && !parts[3].trim().isEmpty()
-                            && !parts[4].trim().isEmpty()) {
-
-                        String description = parts[2].trim();
-                        LocalDateTime from = LocalDateTime.parse(parts[3].trim());
-                        LocalDateTime to = LocalDateTime.parse(parts[4].trim());
-
-                        EventTask task = new EventTask(description, from, to);
-                        task.setDone(done);
-                        tasks.add(task);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Could not load saved tasks.");
-        }
-
-        return tasks;
-    }
-
-    private static void saveTasks(List<Task> tasks){
-        try {
-            Path parent = DATA_FILE.getParent();
-            if (parent != null) {
-                Files.createDirectories(parent);
-            }
-
-            StringBuilder content = new StringBuilder();
-            for (Task task : tasks) {
-                content.append(task.serialize()).append(System.lineSeparator());
-            }
-
-            Files.write(DATA_FILE, content.toString().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            System.out.println("Could not save tasks.");
-        }
-    }
 }
 
 
