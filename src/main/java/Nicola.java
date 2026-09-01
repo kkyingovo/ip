@@ -17,6 +17,7 @@ public class Nicola {
     private static final int MAX_TASKS = 100;
     private static final Ui ui = new Ui();
     private static final Storage storage = new Storage("data/micola.txt");
+    private static final Parser parser = new Parser();
 
     private static final DateTimeFormatter INPUT_DATE =
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
@@ -34,35 +35,49 @@ public class Nicola {
 
         while(ui.hasNextCommand()){
             String input = ui.readCommand();
+            String command = parser.getCommandWord(input);
+            String details = parser.getDetails(input);
 
-            if (input.equals("bye")) {
+            if (command.equals("bye")) {
                 break;
-            } else if (input.equals("list")) {
+            } else if (command.equals("list")) {
                 listTasks(tasks);
-            } else if (input.equals("todo")) {
-                System.out.println("Darling, the todo cannot be empty.");
-            } else if (input.startsWith("todo ")) {
-                addTodo(tasks, input.substring(5));
-            } else if (input.equals("deadline")) {
-                System.out.println("Darling, the deadline cannot be empty.");
-            } else if (input.startsWith("deadline ")) {
-                addDeadline(tasks, input.substring(9));
-            } else if (input.equals("event")) {
-                System.out.println("Darling, the event cannot be empty.");
-            } else if (input.startsWith("event ")) {
-                addEvent(tasks, input.substring(6));
-            } else if (input.equals("mark")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("mark ")) {
-                markTask(tasks, input.substring(5), true);
-            } else if (input.equals("unmark")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("unmark ")) {
-                markTask(tasks, input.substring(7), false);
-            } else if (input.equals("delete")) {
-                System.out.println("Please give me a task number, dear.");
-            } else if (input.startsWith("delete ")) {
-                deleteTask(tasks, input.substring(7));
+            } else if (command.equals("todo")) {
+                if(details.isBlank()){
+                    System.out.println("Darling, the todo cannot be empty.");
+                }else{
+                    addTodo(tasks, details);
+                }
+            } else if (command.equals("deadline")) {
+                if(details.isBlank()){
+                    System.out.println("Darling, the deadline cannot be empty.");
+                }else {
+                    addDeadline(tasks, details);
+                }
+            } else if (command.equals("event")) {
+                if(details.isBlank()) {
+                    System.out.println("Darling, the event cannot be empty.");
+                }else {
+                    addEvent(tasks, details);
+                }
+            } else if (command.equals("mark")) {
+                if(details.isBlank()){
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    markTask(tasks, details, true);
+                }
+            } else if (command.equals("unmark")) {
+                if(details.isBlank()) {
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    markTask(tasks, details, false);
+                }
+            } else if (command.equals("delete")) {
+                if(details.isBlank()) {
+                    System.out.println("Please give me a task number, dear.");
+                } else {
+                    deleteTask(tasks, details);
+                }
             } else {
                 System.out.println("Sorry darling, I don't understand that.");
             }
