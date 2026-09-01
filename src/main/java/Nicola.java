@@ -14,7 +14,6 @@ import java.util.Scanner;
  * A simple chatbot that greets the user, echoes commands, and exits on "bye".
  */
 public class Nicola {
-    private static final int MAX_TASKS = 100;
     private static final Ui ui = new Ui();
     private static final Storage storage = new Storage("data/micola.txt");
     private static final Parser parser = new Parser();
@@ -31,7 +30,7 @@ public class Nicola {
     public static void main(String[] args) {
         ui.showWelcome();
 
-        List<Task> tasks = storage.loadTasks();
+        TaskList tasks = new TaskList(storage.loadTasks());
 
         while(ui.hasNextCommand()){
             String input = ui.readCommand();
@@ -83,26 +82,26 @@ public class Nicola {
             }
 
             ui.showLine();
-            storage.saveTasks(tasks);
+            storage.saveTasks(tasks.getTasks());
         }
 
         ui.showLine();
         ui.showGoodbye();
     }
 
-    private static void listTasks(List<Task> tasks){
+    private static void listTasks(TaskList tasks){
         System.out.println("Here are your tasks babe.");
         for(int i = 0; i < tasks.size(); i++){
             System.out.println(" " + (i + 1) + "." + tasks.get(i).formatForList());
         }
     }
 
-    private static void addTodo(List<Task> tasks, String description){
+    private static void addTodo(TaskList tasks, String description){
         if(description.isBlank()){
             System.out.println("Darling, the todo cannot be empty.");
             return;
         }
-        if(tasks.size() >= MAX_TASKS){
+        if(tasks.isFull()){
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -113,8 +112,8 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void addDeadline(List<Task> tasks, String payload){
-        if (tasks.size() >= MAX_TASKS) {
+    private static void addDeadline(TaskList tasks, String payload){
+        if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -148,8 +147,8 @@ public class Nicola {
         }
 
 
-    private static void addEvent(List<Task> tasks, String payload){
-        if (tasks.size() >= MAX_TASKS) {
+    private static void addEvent(TaskList tasks, String payload){
+        if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -181,7 +180,7 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void markTask(List<Task> tasks, String text, boolean done){
+    private static void markTask(TaskList tasks, String text, boolean done){
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
@@ -201,7 +200,7 @@ public class Nicola {
         }
     }
 
-    private static void deleteTask(List<Task> tasks, String text){
+    private static void deleteTask(TaskList tasks, String text){
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
