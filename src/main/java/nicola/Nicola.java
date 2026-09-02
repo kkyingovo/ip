@@ -71,6 +71,8 @@ public class Nicola {
                 } else {
                     deleteTask(tasks, details);
                 }
+            } else if (command.equals("find")) {
+                findTasks(tasks, details);
             } else {
                 System.out.println("Sorry darling, I don't understand that.");
             }
@@ -224,6 +226,21 @@ public class Nicola {
             return LocalDateTime.parse(text, INPUT_DATE_TIME);
         } catch (DateTimeParseException e) {
             return null;
+        }
+    }
+
+    private static void findTasks(TaskList tasks, String keyword) {
+        keyword = keyword.trim().toLowerCase();
+
+        System.out.println("Here are the matching tasks in your list:");
+
+        int matchIndex = 1;
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.getDescription().toLowerCase().contains(keyword)) {
+                System.out.println(" " + matchIndex + "." + task.formatForList());
+                matchIndex++;
+            }
         }
     }
 
