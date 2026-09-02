@@ -5,11 +5,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class DeadlineTask extends Task {
+    private static final DateTimeFormatter DISPLAY_DATE = DateTimeFormatter.ofPattern("MMM dd uuuu");
+    private static final DateTimeFormatter DISPLAY_DATE_TIME = DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
+
     private final LocalDate byDate;
     private final LocalDateTime byDateTime;
     private final String rawInput;
-    private static final DateTimeFormatter DISPLAY_DATE = DateTimeFormatter.ofPattern("MMM dd uuuu");
-    private static final DateTimeFormatter DISPLAY_DATE_TIME = DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
 
     DeadlineTask(String description, LocalDate byDate, LocalDateTime byDateTime, String rawInput) {
         super(description);

@@ -15,7 +15,7 @@ public class TaskList {
         tasks = new ArrayList<>(loadedTasks);
     }
 
-    public int size(){
+    public int size() {
         return tasks.size();
     }
 
@@ -24,12 +24,12 @@ public class TaskList {
     }
 
     public void add(Task task) {
-        if(tasks.size() < MAX_TASKS) {
+        if (tasks.size() < MAX_TASKS) {
             tasks.add(task);
         }
     }
 
-    public Task remove (int index) {
+    public Task remove(int index) {
         return tasks.remove(index);
     }
 

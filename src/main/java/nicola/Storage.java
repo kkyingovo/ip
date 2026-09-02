@@ -17,7 +17,7 @@ public class Storage {
         this.filePath = Paths.get(filePath);
     }
 
-    public List<Task> loadTasks(){
+    public List<Task> loadTasks() {
         List<Task> tasks = new ArrayList<>();
 
         if (!Files.exists(filePath)) {
@@ -76,7 +76,7 @@ public class Storage {
         return tasks;
     }
 
-    public void saveTasks(List<Task> tasks){
+    public void saveTasks(List<Task> tasks) {
         try {
             Path parent = filePath.getParent();
             if (parent != null) {

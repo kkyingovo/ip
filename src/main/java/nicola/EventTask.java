@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class EventTask extends Task {
-    private final LocalDateTime from;
-    private final LocalDateTime to;
     private static final DateTimeFormatter DISPLAY_DATE = DateTimeFormatter.ofPattern("MMM dd uuuu");
     private static final DateTimeFormatter DISPLAY_DATE_TIME = DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
+
+    private final LocalDateTime from;
+    private final LocalDateTime to;
 
     EventTask(String description, LocalDateTime from, LocalDateTime to) {
         super(description);
