@@ -1,8 +1,10 @@
+package nicola;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DeadlineTask extends Task{
+public class DeadlineTask extends Task {
     private final LocalDate byDate;
     private final LocalDateTime byDateTime;
     private final String rawInput;

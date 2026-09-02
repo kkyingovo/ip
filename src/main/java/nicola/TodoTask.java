@@ -1,4 +1,6 @@
-public class TodoTask extends Task{
+package nicola;
+
+public class TodoTask extends Task {
     TodoTask(String description) {
         super(description);
     }

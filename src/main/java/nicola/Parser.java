@@ -1,3 +1,5 @@
+package nicola;
+
 public class Parser {
     public String getCommandWord(String input){
         if(input.contains(" ")) {
