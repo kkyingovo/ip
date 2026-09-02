@@ -29,7 +29,7 @@ public class TaskList {
      * return the number of the tasks in a task list
      * @return the number of tasks
      */
-    public int size(){
+    public int size() {
         return tasks.size();
     }
 
@@ -47,7 +47,7 @@ public class TaskList {
      * @param task task to add
      */
     public void add(Task task) {
-        if(tasks.size() < MAX_TASKS) {
+        if (tasks.size() < MAX_TASKS) {
             tasks.add(task);
         }
     }
@@ -57,7 +57,7 @@ public class TaskList {
      * @param index index of the task
      * @return the removed task
      */
-    public Task remove (int index) {
+    public Task remove(int index) {
         return tasks.remove(index);
     }
 

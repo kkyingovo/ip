@@ -1,4 +1,5 @@
 package nicola;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -26,7 +27,7 @@ public class Nicola {
 
         TaskList tasks = new TaskList(storage.loadTasks());
 
-        while(ui.hasNextCommand()){
+        while (ui.hasNextCommand()) {
             String input = ui.readCommand();
             String command = parser.getCommandWord(input);
             String details = parser.getDetails(input);
@@ -36,37 +37,37 @@ public class Nicola {
             } else if (command.equals("list")) {
                 listTasks(tasks);
             } else if (command.equals("todo")) {
-                if(details.isBlank()){
+                if (details.isBlank()) {
                     System.out.println("Darling, the todo cannot be empty.");
-                }else{
+                } else {
                     addTodo(tasks, details);
                 }
             } else if (command.equals("deadline")) {
-                if(details.isBlank()){
+                if (details.isBlank()) {
                     System.out.println("Darling, the deadline cannot be empty.");
-                }else {
+                } else {
                     addDeadline(tasks, details);
                 }
             } else if (command.equals("event")) {
-                if(details.isBlank()) {
+                if (details.isBlank()) {
                     System.out.println("Darling, the event cannot be empty.");
-                }else {
+                } else {
                     addEvent(tasks, details);
                 }
             } else if (command.equals("mark")) {
-                if(details.isBlank()){
+                if (details.isBlank()) {
                     System.out.println("Please give me a task number, dear.");
                 } else {
                     markTask(tasks, details, true);
                 }
             } else if (command.equals("unmark")) {
-                if(details.isBlank()) {
+                if (details.isBlank()) {
                     System.out.println("Please give me a task number, dear.");
                 } else {
                     markTask(tasks, details, false);
                 }
             } else if (command.equals("delete")) {
-                if(details.isBlank()) {
+                if (details.isBlank()) {
                     System.out.println("Please give me a task number, dear.");
                 } else {
                     deleteTask(tasks, details);
@@ -85,19 +86,19 @@ public class Nicola {
         ui.showGoodbye();
     }
 
-    private static void listTasks(TaskList tasks){
+    private static void listTasks(TaskList tasks) {
         System.out.println("Here are your tasks babe.");
-        for(int i = 0; i < tasks.size(); i++){
+        for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + "." + tasks.get(i).formatForList());
         }
     }
 
-    private static void addTodo(TaskList tasks, String description){
-        if(description.isBlank()){
+    private static void addTodo(TaskList tasks, String description) {
+        if (description.isBlank()) {
             System.out.println("Darling, the todo cannot be empty.");
             return;
         }
-        if(tasks.isFull()){
+        if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
         }
@@ -108,7 +109,7 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void addDeadline(TaskList tasks, String payload){
+    private static void addDeadline(TaskList tasks, String payload) {
         if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
@@ -126,24 +127,24 @@ public class Nicola {
         LocalDateTime dateTime = parseDateTime(dateText);
         LocalDate date = null;
 
-        if(dateTime == null){
+        if (dateTime == null) {
             date = parseData(dateText);
         }
 
-        if(dateTime == null && date == null){
+        if (dateTime == null && date == null) {
             System.out.println("Darling, please use a valid date like yyyy-MM-dd or yyyy-MM-dd HHmm.");
             return;
-            }
+        }
 
         tasks.add(new DeadlineTask(description, date, dateTime, dateText));
         System.out.println("Sure dear. I've added this deadline for you");
         System.out.println("  [D][ ] " + tasks.get(tasks.size() - 1).getDisplayText());
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
 
-        }
+    }
 
 
-    private static void addEvent(TaskList tasks, String payload){
+    private static void addEvent(TaskList tasks, String payload) {
         if (tasks.isFull()) {
             System.out.println("Darling, your task list is full.");
             return;
@@ -176,7 +177,7 @@ public class Nicola {
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
 
-    private static void markTask(TaskList tasks, String text, boolean done){
+    private static void markTask(TaskList tasks, String text, boolean done) {
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
@@ -196,7 +197,7 @@ public class Nicola {
         }
     }
 
-    private static void deleteTask(TaskList tasks, String text){
+    private static void deleteTask(TaskList tasks, String text) {
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
@@ -213,7 +214,7 @@ public class Nicola {
         }
     }
 
-    private static LocalDate parseData(String text){
+    private static LocalDate parseData(String text) {
         try {
             return LocalDate.parse(text, INPUT_DATE);
         } catch (DateTimeParseException e) {

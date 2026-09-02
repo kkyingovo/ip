@@ -10,8 +10,8 @@ public class Parser {
      * @param input the user's input
      * @return the command word which is the first word in the input
      */
-    public String getCommandWord(String input){
-        if(input.contains(" ")) {
+    public String getCommandWord(String input) {
+        if (input.contains(" ")) {
             return input.substring(0, input.indexOf(" "));
         }
 

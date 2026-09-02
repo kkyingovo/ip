@@ -28,7 +28,7 @@ public class Storage {
      * load tasks from the disk
      * @return a list containing the tasks
      */
-    public List<Task> loadTasks(){
+    public List<Task> loadTasks() {
         List<Task> tasks = new ArrayList<>();
 
         if (!Files.exists(filePath)) {
@@ -91,7 +91,7 @@ public class Storage {
      * save the current tassk to the data file
      * @param tasks the current tasks to save
      */
-    public void saveTasks(List<Task> tasks){
+    public void saveTasks(List<Task> tasks) {
         try {
             Path parent = filePath.getParent();
             if (parent != null) {
