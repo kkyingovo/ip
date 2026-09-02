@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 /**
- * A simple chatbot that greets the user, echoes commands, and exits on "bye".
+ * Runs the chatbot Nicola and processes commands entered by the user.
  */
 public class Nicola {
     private static final Ui ui = new Ui();
