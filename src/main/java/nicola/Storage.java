@@ -10,13 +10,24 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * loads tasks from disk and save tasks to disk.
+ */
 public class Storage {
     private final Path filePath;
 
+    /**
+     * create a storage object for the specific file.
+     * @param filePath the path of the task date file
+     */
     public Storage(String filePath) {
         this.filePath = Paths.get(filePath);
     }
 
+    /**
+     * load tasks from the disk
+     * @return a list containing the tasks
+     */
     public List<Task> loadTasks(){
         List<Task> tasks = new ArrayList<>();
 
@@ -76,6 +87,10 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * save the current tassk to the data file
+     * @param tasks the current tasks to save
+     */
     public void saveTasks(List<Task> tasks){
         try {
             Path parent = filePath.getParent();

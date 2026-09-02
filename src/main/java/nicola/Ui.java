@@ -2,6 +2,9 @@ package nicola;
 
 import java.util.Scanner;
 
+/**
+ * handles the communications between the user and the chatbot.
+ */
 public class Ui {
     private static final String LINE = "_______^_^___________________________________________________";
     private final Scanner scanner = new Scanner(System.in);

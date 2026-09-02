@@ -3,6 +3,9 @@ package nicola;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * a task that has start date+time and end date+time
+ */
 public class EventTask extends Task {
     private final LocalDateTime from;
     private final LocalDateTime to;
