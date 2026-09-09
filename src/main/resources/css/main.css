@@ -6,23 +6,23 @@
 }
 
 .text-field {
-    -fx-background-color: #e8b68e;
-    -fx-font: 20px "Arial";
+    -fx-background-color: linear-gradient(to bottom right, #e6cbb1, #dbe6b1);
+    -fx-font: 20px "Gabriola";
 }
 
 .button {
-    -fx-background-color: #f5badf;
-    -fx-font: italic bold 16px "Arial";
+    -fx-background-color: #d2ffcc;
+    -fx-font: italic bold 18px "Gabriola";
 }
 
 .button:hover {
     -fx-background-color:pink;
-    -fx-font-size: 18px;
+    -fx-font-size: 20px;
 }
 
 .button:pressed {
-    -fx-background-color:orange;
-    -fx-font-size: 20px;
+    -fx-background-color:#b1bde6;
+    -fx-font-size: 22px;
 }
 
 .scroll-pane,
@@ -31,7 +31,7 @@
 }
 
 .scroll-bar {
-    -fx-font-size: 10px;  /* Change width of scroll bar. */
+    -fx-font-size: 12px;  /* Change width of scroll bar. */
     -fx-background-color: main-color;
 }
 

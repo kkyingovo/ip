@@ -45,44 +45,44 @@ public class Nicola {
                 listTasks(tasks);
             } else if (command.equals("todo")) {
                 if (details.isBlank()) {
-                    System.out.println("Darling, the todo cannot be empty.");
+                    System.out.println("The todo cannot be empty.");
                 } else {
                     addTodo(tasks, details);
                 }
             } else if (command.equals("deadline")) {
                 if (details.isBlank()) {
-                    System.out.println("Darling, the deadline cannot be empty.");
+                    System.out.println("The deadline cannot be empty.");
                 } else {
                     addDeadline(tasks, details);
                 }
             } else if (command.equals("event")) {
                 if (details.isBlank()) {
-                    System.out.println("Darling, the event cannot be empty.");
+                    System.out.println("The event cannot be empty.");
                 } else {
                     addEvent(tasks, details);
                 }
             } else if (command.equals("mark")) {
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number, dear.");
+                    System.out.println("Please give me a task number.");
                 } else {
                     markTask(tasks, details, true);
                 }
             } else if (command.equals("unmark")) {
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number, dear.");
+                    System.out.println("Please give me a task number.");
                 } else {
                     markTask(tasks, details, false);
                 }
             } else if (command.equals("delete")) {
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number, dear.");
+                    System.out.println("Please give me a task number.");
                 } else {
                     deleteTask(tasks, details);
                 }
             } else if (command.equals("find")) {
                 findTasks(tasks, details);
             } else {
-                System.out.println("Sorry darling, I don't understand that.");
+                System.out.println("Sorry, I don't understand that.");
             }
 
             ui.showLine();
@@ -102,11 +102,11 @@ public class Nicola {
 
     private static void addTodo(TaskList tasks, String description) {
         if (description.isBlank()) {
-            System.out.println("Darling, the todo cannot be empty.");
+            System.out.println("The todo cannot be empty.");
             return;
         }
         if (tasks.isFull()) {
-            System.out.println("Darling, your task list is full.");
+            System.out.println("Your task list is full.");
             return;
         }
 
@@ -118,13 +118,13 @@ public class Nicola {
 
     private static void addDeadline(TaskList tasks, String payload) {
         if (tasks.isFull()) {
-            System.out.println("Darling, your task list is full.");
+            System.out.println("Your task list is full.");
             return;
         }
 
         String[] parts = payload.split(" /by ", 2);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
-            System.out.println("Darling, the deadline needs a description and /by date.");
+            System.out.println("The deadline needs a description and /by date.");
             return;
         }
 
@@ -139,7 +139,7 @@ public class Nicola {
         }
 
         if (dateTime == null && date == null) {
-            System.out.println("Darling, please use a valid date like yyyy-MM-dd or yyyy-MM-dd HHmm.");
+            System.out.println("Please use a valid date like yyyy-MM-dd or yyyy-MM-dd HHmm.");
             return;
         }
 
@@ -153,7 +153,7 @@ public class Nicola {
 
     private static void addEvent(TaskList tasks, String payload) {
         if (tasks.isFull()) {
-            System.out.println("Darling, your task list is full.");
+            System.out.println("Your task list is full.");
             return;
         }
 
@@ -217,7 +217,7 @@ public class Nicola {
             System.out.println("  " + removed.formatForList());
             System.out.println("Now you have " + tasks.size() + " tasks in your list.");
         } catch (NumberFormatException e) {
-            System.out.println("Please give me a valid task number, dear.");
+            System.out.println("Please give me a valid task number.");
         }
     }
 
@@ -306,44 +306,44 @@ public class Nicola {
             listTasks(tasks);
         } else if (command.equals("todo")) {
             if (details.isBlank()) {
-                System.out.println("Darling, the todo cannot be empty.");
+                System.out.println("The todo cannot be empty.");
             } else {
                 addTodo(tasks, details);
             }
         } else if (command.equals("deadline")) {
             if (details.isBlank()) {
-                System.out.println("Darling, the deadline cannot be empty.");
+                System.out.println("The deadline cannot be empty.");
             } else {
                 addDeadline(tasks, details);
             }
         } else if (command.equals("event")) {
             if (details.isBlank()) {
-                System.out.println("Darling, the event cannot be empty.");
+                System.out.println("The event cannot be empty.");
             } else {
                 addEvent(tasks, details);
             }
         } else if (command.equals("mark")) {
             if (details.isBlank()) {
-                System.out.println("Please give me a task number, dear.");
+                System.out.println("Please give me a task number.");
             } else {
                 markTask(tasks, details, true);
             }
         } else if (command.equals("unmark")) {
             if (details.isBlank()) {
-                System.out.println("Please give me a task number, dear.");
+                System.out.println("Please give me a task number.");
             } else {
                 markTask(tasks, details, false);
             }
         } else if (command.equals("delete")) {
             if (details.isBlank()) {
-                System.out.println("Please give me a task number, dear.");
+                System.out.println("Please give me a task number.");
             } else {
                 deleteTask(tasks, details);
             }
         } else if (command.equals("find")) {
             findTasks(tasks, details);
         } else {
-            System.out.println("Sorry darling, I don't understand that.");
+            System.out.println("Sorry, I don't understand that.");
         }
     }
 
