@@ -4,6 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Runs the chatbot Nicola and processes commands entered by the user.
@@ -12,7 +15,6 @@ public class Nicola {
     private static final Ui ui = new Ui();
     private static final Storage storage = new Storage("data/nicola.txt");
     private static final Parser parser = new Parser();
-
     private static final DateTimeFormatter INPUT_DATE =
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
     private static final DateTimeFormatter INPUT_DATE_TIME =
@@ -21,6 +23,11 @@ public class Nicola {
             DateTimeFormatter.ofPattern("MMM dd uuuu");
     private static final DateTimeFormatter DISPLAY_DATE_TIME =
             DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
+    private String commandType;
+    /**
+     * Task list used by the JavaFX interface.
+     */
+    private final TaskList tasks = new TaskList(storage.loadTasks());
 
     public static void main(String[] args) {
         ui.showWelcome();
@@ -87,7 +94,7 @@ public class Nicola {
     }
 
     private static void listTasks(TaskList tasks) {
-        System.out.println("Here are your tasks babe.");
+        System.out.println("Here are your tasks.");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + "." + tasks.get(i).formatForList());
         }
@@ -104,7 +111,7 @@ public class Nicola {
         }
 
         tasks.add(new TodoTask(description.trim()));
-        System.out.println("Sure dear. I've added this todo for you");
+        System.out.println("Sure. I've added this todo for you");
         System.out.println("  [T][ ] " + description.trim());
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
@@ -137,7 +144,7 @@ public class Nicola {
         }
 
         tasks.add(new DeadlineTask(description, date, dateTime, dateText));
-        System.out.println("Sure dear. I've added this deadline for you");
+        System.out.println("Sure. I've added this deadline for you");
         System.out.println("  [D][ ] " + tasks.get(tasks.size() - 1).getDisplayText());
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
 
@@ -152,14 +159,14 @@ public class Nicola {
 
         String[] parts = payload.split(" /from ", 2);
         if (parts.length < 2 || parts[0].isBlank()) {
-            System.out.println("Darling, the event needs a description, /from time, and /to time.");
+            System.out.println("The event needs a description, /from time, and /to time.");
             return;
         }
 
         String description = parts[0].trim();
         String[] times = parts[1].split(" /to ", 2);
         if (times.length < 2 || times[0].isBlank() || times[1].isBlank()) {
-            System.out.println("Darling, the event needs a description, /from time, and /to time.");
+            System.out.println("The event needs a description, /from time, and /to time.");
             return;
         }
 
@@ -167,12 +174,12 @@ public class Nicola {
         LocalDateTime to = parseDateTime(times[1].trim());
 
         if (from == null || to == null) {
-            System.out.println("Darling, please use valid date-time values like yyyy-MM-dd HHmm.");
+            System.out.println("Please use valid date-time values like yyyy-MM-dd HHmm.");
             return;
         }
 
         tasks.add(new EventTask(description, from, to));
-        System.out.println("Sure dear. I've added this event for you");
+        System.out.println("Sure. I've added this event for you");
         System.out.println("  [E][ ] " + tasks.get(tasks.size() - 1).getDisplayText());
         System.out.println("Now you have " + tasks.size() + " tasks in your list.");
     }
@@ -187,9 +194,9 @@ public class Nicola {
 
             tasks.get(index).setDone(done);
             if (done) {
-                System.out.println("Good job babe, I'm proud of you.");
+                System.out.println("Good job, I'm proud of you.");
             } else {
-                System.out.println("Yes babe, I've corrected the mistake.");
+                System.out.println("Yes, I've corrected the mistake.");
             }
             System.out.println("  " + tasks.get(index).formatForList());
         } catch (NumberFormatException e) {
@@ -206,7 +213,7 @@ public class Nicola {
             }
 
             Task removed = tasks.remove(index);
-            System.out.println("Babe, I've deleted the task.");
+            System.out.println("I've deleted the task.");
             System.out.println("  " + removed.formatForList());
             System.out.println("Now you have " + tasks.size() + " tasks in your list.");
         } catch (NumberFormatException e) {
@@ -242,6 +249,101 @@ public class Nicola {
                 System.out.println(" " + matchIndex + "." + task.formatForList());
                 matchIndex++;
             }
+        }
+    }
+
+    /**
+     * Generates a response for a command entered through the GUI.
+     *
+     * @param input command entered by the user
+     * @return Nicola's response
+     */
+    public String getResponse(String input) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        PrintStream originalOutput = System.out;
+
+        try (PrintStream capturedOutput =
+                     new PrintStream(output, true, StandardCharsets.UTF_8)) {
+
+            // Existing command methods print to System.out, so temporarily
+            // collect that text for the JavaFX dialog box.
+            System.setOut(capturedOutput);
+            processCommand(input);
+
+        } finally {
+            // Always restore normal terminal output.
+            System.setOut(originalOutput);
+        }
+
+        storage.saveTasks(tasks.getTasks());
+
+        return output.toString(StandardCharsets.UTF_8).strip();
+    }
+
+    /**
+     * Returns the command word most recently processed by the GUI.
+     *
+     * @return command word such as todo, mark, or delete
+     */
+    public String getCommandType() {
+        return commandType;
+    }
+
+    /**
+     * Identifies and executes a command entered through the GUI.
+     *
+     * @param input complete command entered by the user
+     */
+    private void processCommand(String input) {
+        String command = parser.getCommandWord(input);
+        String details = parser.getDetails(input);
+
+        commandType = command;
+
+        if (command.equals("bye")) {
+            System.out.println("Bye. I'll miss you.");
+        } else if (command.equals("list")) {
+            listTasks(tasks);
+        } else if (command.equals("todo")) {
+            if (details.isBlank()) {
+                System.out.println("Darling, the todo cannot be empty.");
+            } else {
+                addTodo(tasks, details);
+            }
+        } else if (command.equals("deadline")) {
+            if (details.isBlank()) {
+                System.out.println("Darling, the deadline cannot be empty.");
+            } else {
+                addDeadline(tasks, details);
+            }
+        } else if (command.equals("event")) {
+            if (details.isBlank()) {
+                System.out.println("Darling, the event cannot be empty.");
+            } else {
+                addEvent(tasks, details);
+            }
+        } else if (command.equals("mark")) {
+            if (details.isBlank()) {
+                System.out.println("Please give me a task number, dear.");
+            } else {
+                markTask(tasks, details, true);
+            }
+        } else if (command.equals("unmark")) {
+            if (details.isBlank()) {
+                System.out.println("Please give me a task number, dear.");
+            } else {
+                markTask(tasks, details, false);
+            }
+        } else if (command.equals("delete")) {
+            if (details.isBlank()) {
+                System.out.println("Please give me a task number, dear.");
+            } else {
+                deleteTask(tasks, details);
+            }
+        } else if (command.equals("find")) {
+            findTasks(tasks, details);
+        } else {
+            System.out.println("Sorry darling, I don't understand that.");
         }
     }
 

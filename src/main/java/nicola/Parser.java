@@ -7,6 +7,7 @@ public class Parser {
 
     /**
      * extract the command word out from an input.
+     *
      * @param input the user's input
      * @return the command word which is the first word in the input
      */
@@ -20,6 +21,7 @@ public class Parser {
 
     /**
      * extract the details out from the input.
+     *
      * @param input the user's input
      * @return the details after the command word
      */

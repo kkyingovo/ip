@@ -18,6 +18,7 @@ public class Storage {
 
     /**
      * create a storage object for the specific file.
+     *
      * @param filePath the path of the task date file
      */
     public Storage(String filePath) {
@@ -26,6 +27,7 @@ public class Storage {
 
     /**
      * load tasks from the disk
+     *
      * @return a list containing the tasks
      */
     public List<Task> loadTasks() {
@@ -89,6 +91,7 @@ public class Storage {
 
     /**
      * save the current tassk to the data file
+     *
      * @param tasks the current tasks to save
      */
     public void saveTasks(List<Task> tasks) {

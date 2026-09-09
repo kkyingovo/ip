@@ -19,6 +19,7 @@ public class TaskList {
 
     /**
      * create a task list containing the given tasks
+     *
      * @param loadedTasks the existing tasks to place in the list
      */
     public TaskList(List<Task> loadedTasks) {
@@ -27,6 +28,7 @@ public class TaskList {
 
     /**
      * return the number of the tasks in a task list
+     *
      * @return the number of tasks
      */
     public int size() {
@@ -35,6 +37,7 @@ public class TaskList {
 
     /**
      * get a specific task
+     *
      * @param index index of the task wanted
      * @return the task at the index
      */
@@ -44,6 +47,7 @@ public class TaskList {
 
     /**
      * add the task to the list
+     *
      * @param task task to add
      */
     public void add(Task task) {
@@ -54,6 +58,7 @@ public class TaskList {
 
     /**
      * remove the specific task
+     *
      * @param index index of the task
      * @return the removed task
      */
@@ -63,6 +68,7 @@ public class TaskList {
 
     /**
      * return all tasks in the task list
+     *
      * @return the list of tasks
      */
     public List<Task> getTasks() {
@@ -71,6 +77,7 @@ public class TaskList {
 
     /**
      * check if the task list is full
+     *
      * @return true if the list is full, false otherwise
      */
     public boolean isFull() {
