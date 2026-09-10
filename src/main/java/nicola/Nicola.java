@@ -95,7 +95,7 @@ public class Nicola {
         LocalDate date = null;
 
         if (dateTime == null) {
-            date = parseData(dateText);
+            date = parseDate(dateText);
         }
 
         if (dateTime == null && date == null) {
@@ -181,7 +181,7 @@ public class Nicola {
         }
     }
 
-    private static LocalDate parseData(String text) {
+    private static LocalDate parseDate(String text) {
         try {
             return LocalDate.parse(text, INPUT_DATE);
         } catch (DateTimeParseException e) {
@@ -262,6 +262,7 @@ public class Nicola {
 
         if (command.equals("bye")) {
             System.out.println("Bye. I'll miss you.");
+            return;
         }
 
         executeCommand(command, details, tasks);
