@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter;
  * a task that has start date+time and end date+time
  */
 public class EventTask extends Task {
-    private static final DateTimeFormatter DISPLAY_DATE = DateTimeFormatter.ofPattern("MMM dd uuuu");
     private static final DateTimeFormatter DISPLAY_DATE_TIME = DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
 
     private final LocalDateTime from;
