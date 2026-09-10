@@ -57,10 +57,6 @@ public class Nicola {
     }
 
     private static void addTodo(TaskList tasks, String description) {
-        if (description.isBlank()) {
-            System.out.println("The todo cannot be empty.");
-            return;
-        }
         if (tasks.isFull()) {
             System.out.println("Your task list is full.");
             return;
