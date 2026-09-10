@@ -23,6 +23,8 @@ public class TaskList {
      * @param loadedTasks the existing tasks to place in the list
      */
     public TaskList(List<Task> loadedTasks) {
+        assert loadedTasks != null : "Loaded task list should not be null";
+
         tasks = new ArrayList<>(loadedTasks);
     }
 
@@ -51,6 +53,8 @@ public class TaskList {
      * @param task task to add
      */
     public void add(Task task) {
+        assert task != null : "Task to add should not be null";
+
         if (tasks.size() < MAX_TASKS) {
             tasks.add(task);
         }

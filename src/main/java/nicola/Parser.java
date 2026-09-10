@@ -12,6 +12,8 @@ public class Parser {
      * @return the command word which is the first word in the input
      */
     public String getCommandWord(String input) {
+        assert input != null : "Input should not be null";
+
         if (input.contains(" ")) {
             return input.substring(0, input.indexOf(" "));
         }
@@ -26,6 +28,8 @@ public class Parser {
      * @return the details after the command word
      */
     public String getDetails(String input) {
+        assert input != null : "Input should not be null";
+
         if (input.contains(" ")) {
             return input.substring(input.indexOf(" ") + 1).trim();
         }

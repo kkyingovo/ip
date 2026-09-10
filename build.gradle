@@ -64,9 +64,10 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'duke.jar'
+    archiveFileName = 'nicola.jar'
 }
 
 run {
     standardInput = System.in
+    enableAssertions = true;
 }
