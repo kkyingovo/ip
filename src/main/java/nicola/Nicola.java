@@ -19,10 +19,6 @@ public class Nicola {
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
     private static final DateTimeFormatter INPUT_DATE_TIME =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm");
-    private static final DateTimeFormatter DISPLAY_DATE =
-            DateTimeFormatter.ofPattern("MMM dd uuuu");
-    private static final DateTimeFormatter DISPLAY_DATE_TIME =
-            DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
     private String commandType;
     /**
      * Task list used by the JavaFX interface.
