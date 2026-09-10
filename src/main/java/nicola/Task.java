@@ -8,6 +8,8 @@ public abstract class Task {
     private boolean done;
 
     Task(String description) {
+        assert description != null : "Task description should not be null";
+
         this.description = description;
     }
 
