@@ -7,6 +7,7 @@ import java.time.format.DateTimeParseException;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * Runs the chatbot Nicola and processes commands entered by the user.
@@ -238,17 +239,19 @@ public class Nicola {
     }
 
     private static void findTasks(TaskList tasks, String keyword) {
-        keyword = keyword.trim().toLowerCase();
+        String normalizedKeyword = keyword.trim().toLowerCase();
+
+        List<Task> matchingTasks = tasks.getTasks().stream()
+                .filter(task -> task.getDescription()
+                        .toLowerCase()
+                        .contains(normalizedKeyword))
+                .toList();
 
         System.out.println("Here are the matching tasks in your list:");
 
-        int matchIndex = 1;
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task.getDescription().toLowerCase().contains(keyword)) {
-                System.out.println(" " + matchIndex + "." + task.formatForList());
-                matchIndex++;
-            }
+        for (int i = 0; i < matchingTasks.size(); i++) {
+            System.out.println(" " + (i + 1) + "."
+                    + matchingTasks.get(i).formatForList());
         }
     }
 
