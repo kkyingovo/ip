@@ -16,7 +16,7 @@
             </font>
         </TextField>
 
-        <Button fx:id="sendButton" layoutX="324.0" layoutY="558.0" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="41.0" prefWidth="76.0" text="Send" textFill="#275435" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="0.0">
+        <Button layoutX="324.0" layoutY="558.0" mnemonicParsing="false" onAction="#handleUserInput" prefHeight="41.0" prefWidth="76.0" text="Send" textFill="#275435" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="0.0">
             <font>
                 <Font name="Algerian" size="20.0" />
             </font>

@@ -19,10 +19,6 @@ public class Nicola {
             DateTimeFormatter.ofPattern("uuuu-MM-dd");
     private static final DateTimeFormatter INPUT_DATE_TIME =
             DateTimeFormatter.ofPattern("uuuu-MM-dd HHmm");
-    private static final DateTimeFormatter DISPLAY_DATE =
-            DateTimeFormatter.ofPattern("MMM dd uuuu");
-    private static final DateTimeFormatter DISPLAY_DATE_TIME =
-            DateTimeFormatter.ofPattern("MMM dd uuuu HHmm");
     private String commandType;
     /**
      * Task list used by the JavaFX interface.
@@ -41,49 +37,9 @@ public class Nicola {
 
             if (command.equals("bye")) {
                 break;
-            } else if (command.equals("list")) {
-                listTasks(tasks);
-            } else if (command.equals("todo")) {
-                if (details.isBlank()) {
-                    System.out.println("The todo cannot be empty.");
-                } else {
-                    addTodo(tasks, details);
-                }
-            } else if (command.equals("deadline")) {
-                if (details.isBlank()) {
-                    System.out.println("The deadline cannot be empty.");
-                } else {
-                    addDeadline(tasks, details);
-                }
-            } else if (command.equals("event")) {
-                if (details.isBlank()) {
-                    System.out.println("The event cannot be empty.");
-                } else {
-                    addEvent(tasks, details);
-                }
-            } else if (command.equals("mark")) {
-                if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
-                } else {
-                    markTask(tasks, details, true);
-                }
-            } else if (command.equals("unmark")) {
-                if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
-                } else {
-                    markTask(tasks, details, false);
-                }
-            } else if (command.equals("delete")) {
-                if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
-                } else {
-                    deleteTask(tasks, details);
-                }
-            } else if (command.equals("find")) {
-                findTasks(tasks, details);
-            } else {
-                System.out.println("Sorry, I don't understand that.");
             }
+
+            executeCommand(command, details, tasks);
 
             ui.showLine();
             storage.saveTasks(tasks.getTasks());
@@ -101,10 +57,6 @@ public class Nicola {
     }
 
     private static void addTodo(TaskList tasks, String description) {
-        if (description.isBlank()) {
-            System.out.println("The todo cannot be empty.");
-            return;
-        }
         if (tasks.isFull()) {
             System.out.println("Your task list is full.");
             return;
@@ -135,7 +87,7 @@ public class Nicola {
         LocalDate date = null;
 
         if (dateTime == null) {
-            date = parseData(dateText);
+            date = parseDate(dateText);
         }
 
         if (dateTime == null && date == null) {
@@ -221,7 +173,7 @@ public class Nicola {
         }
     }
 
-    private static LocalDate parseData(String text) {
+    private static LocalDate parseDate(String text) {
         try {
             return LocalDate.parse(text, INPUT_DATE);
         } catch (DateTimeParseException e) {
@@ -302,48 +254,84 @@ public class Nicola {
 
         if (command.equals("bye")) {
             System.out.println("Bye. I'll miss you.");
-        } else if (command.equals("list")) {
-            listTasks(tasks);
-        } else if (command.equals("todo")) {
-            if (details.isBlank()) {
-                System.out.println("The todo cannot be empty.");
-            } else {
-                addTodo(tasks, details);
-            }
-        } else if (command.equals("deadline")) {
-            if (details.isBlank()) {
-                System.out.println("The deadline cannot be empty.");
-            } else {
-                addDeadline(tasks, details);
-            }
-        } else if (command.equals("event")) {
-            if (details.isBlank()) {
-                System.out.println("The event cannot be empty.");
-            } else {
-                addEvent(tasks, details);
-            }
-        } else if (command.equals("mark")) {
-            if (details.isBlank()) {
-                System.out.println("Please give me a task number.");
-            } else {
-                markTask(tasks, details, true);
-            }
-        } else if (command.equals("unmark")) {
-            if (details.isBlank()) {
-                System.out.println("Please give me a task number.");
-            } else {
-                markTask(tasks, details, false);
-            }
-        } else if (command.equals("delete")) {
-            if (details.isBlank()) {
-                System.out.println("Please give me a task number.");
-            } else {
-                deleteTask(tasks, details);
-            }
-        } else if (command.equals("find")) {
-            findTasks(tasks, details);
-        } else {
-            System.out.println("Sorry, I don't understand that.");
+            return;
+        }
+
+        executeCommand(command, details, tasks);
+    }
+
+    /**
+     * Executes a parsed command using the given task list.
+     *
+     * @param command command word to execute
+     * @param details details provided after the command word
+     * @param tasks task list affected by the command
+     */
+    private static void executeCommand(
+            String command,
+            String details,
+            TaskList tasks
+    ) {
+        switch (command) {
+            case "list":
+                listTasks(tasks);
+                break;
+
+            case "todo":
+                if (details.isBlank()) {
+                    System.out.println("The todo cannot be empty.");
+                } else {
+                    addTodo(tasks, details);
+                }
+                break;
+
+            case "deadline":
+                if (details.isBlank()) {
+                    System.out.println("The deadline cannot be empty.");
+                } else {
+                    addDeadline(tasks, details);
+                }
+                break;
+
+            case "event":
+                if (details.isBlank()) {
+                    System.out.println("The event cannot be empty.");
+                } else {
+                    addEvent(tasks, details);
+                }
+                break;
+
+            case "mark":
+                if (details.isBlank()) {
+                    System.out.println("Please give me a task number.");
+                } else {
+                    markTask(tasks, details, true);
+                }
+                break;
+
+            case "unmark":
+                if (details.isBlank()) {
+                    System.out.println("Please give me a task number.");
+                } else {
+                    markTask(tasks, details, false);
+                }
+                break;
+
+            case "delete":
+                if (details.isBlank()) {
+                    System.out.println("Please give me a task number.");
+                } else {
+                    deleteTask(tasks, details);
+                }
+                break;
+
+            case "find":
+                findTasks(tasks, details);
+                break;
+
+            default:
+                System.out.println("Sorry, I don't understand that.");
+                break;
         }
     }
 
