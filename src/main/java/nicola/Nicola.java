@@ -199,6 +199,11 @@ public class Nicola {
                         .contains(normalizedKeyword))
                 .toList();
 
+        if(matchingTasks.size() == 0){
+            System.out.println("Sorry, there is no matching task currently.");
+            return;
+        }
+
         System.out.println("Here are the matching tasks in your list:");
 
         for (int i = 0; i < matchingTasks.size(); i++) {
@@ -332,9 +337,41 @@ public class Nicola {
                 findTasks(tasks, details);
                 break;
 
-            default:
-                System.out.println("Sorry, I don't understand that.");
+            case "reminders":
+                showReminders(tasks);
                 break;
+
+            default:
+                System.out.println("Sorry, I don't understand that.\n" +
+                        "Try list, todo, deadline, event, mark, unmark, delete, find, reminders");
+                break;
+        }
+    }
+
+    /**
+     * Displays incomplete deadlines due within the next seven days.
+     *
+     * @param tasks the user's task list
+     */
+    private static void showReminders(TaskList tasks) {
+        LocalDate today = LocalDate.now();
+        int reminderPeriod = 7;
+        boolean hasReminder = false;
+
+        System.out.println("Here are your upcoming deadlines:");
+
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+
+            if (task instanceof DeadlineTask deadline
+                    && deadline.isDueWithin(today, reminderPeriod)) {
+                System.out.println(" " + (i + 1) + "." + task.formatForList());
+                hasReminder = true;
+            }
+        }
+
+        if (!hasReminder) {
+            System.out.println(" You have no deadlines due within the next 7 days.");
         }
     }
 
