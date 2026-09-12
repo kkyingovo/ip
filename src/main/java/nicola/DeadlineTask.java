@@ -3,6 +3,7 @@ package nicola;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 /**
  * A task that has a deadline
@@ -46,5 +47,25 @@ public class DeadlineTask extends Task {
         }
         return "D | " + (isDone() ? "1" : "0") + " | " + getDescription()
                 + " | " + byDate + " | 0 | ";
+    }
+
+    /**
+     * Returns whether this deadline is due within the given number of days.
+     *
+     * @param today the current date
+     * @param numberOfDays the reminder period
+     * @return true if this incomplete deadline is due within the period
+     */
+    boolean isDueWithin(LocalDate today, int numberOfDays) {
+        LocalDate dueDate = byDateTime != null
+                ? byDateTime.toLocalDate()
+                : byDate;
+
+        if (dueDate == null || isDone()) {
+            return false;
+        }
+
+        long daysUntilDue = ChronoUnit.DAYS.between(today, dueDate);
+        return daysUntilDue >= 0 && daysUntilDue <= numberOfDays;
     }
 }
