@@ -51,7 +51,7 @@ public class Nicola {
     }
 
     private static void listTasks(TaskList tasks) {
-        System.out.println("Here are your tasks.");
+        System.out.println("Here are the matters currently on our agenda:");
         for (int i = 0; i < tasks.size(); i++) {
             System.out.println(" " + (i + 1) + "." + tasks.get(i).formatForList());
         }
@@ -64,9 +64,9 @@ public class Nicola {
         }
 
         tasks.add(new TodoTask(description.trim()));
-        System.out.println("Sure. I've added this todo for you");
+        System.out.println("Consider it handled. I've added this task to our plans.");
         System.out.println("  [T][ ] " + description.trim());
-        System.out.println("Now you have " + tasks.size() + " tasks in your list.");
+        System.out.println("We now have " + tasks.size() + " matters requiring our attention.");
     }
 
     private static void addDeadline(TaskList tasks, String payload) {
@@ -97,9 +97,9 @@ public class Nicola {
         }
 
         tasks.add(new DeadlineTask(description, date, dateTime, dateText));
-        System.out.println("Sure. I've added this deadline for you");
+        System.out.println("A deadline, understood. I'll make certain we don't lose sight of it.");
         System.out.println("  [D][ ] " + tasks.get(tasks.size() - 1).getDisplayText());
-        System.out.println("Now you have " + tasks.size() + " tasks in your list.");
+        System.out.println("We now have " + tasks.size() + " matters requiring our attention.");
 
     }
 
@@ -132,9 +132,9 @@ public class Nicola {
         }
 
         tasks.add(new EventTask(description, from, to));
-        System.out.println("Sure. I've added this event for you");
+        System.out.println("I've reserved a place for this event in our schedule.");
         System.out.println("  [E][ ] " + tasks.get(tasks.size() - 1).getDisplayText());
-        System.out.println("Now you have " + tasks.size() + " tasks in your list.");
+        System.out.println("We now have " + tasks.size() + " matters requiring our attention.");
     }
 
     private static void markTask(TaskList tasks, String text, boolean done) {
@@ -147,13 +147,13 @@ public class Nicola {
 
             tasks.get(index).setDone(done);
             if (done) {
-                System.out.println("Good job, I'm proud of you.");
+                System.out.println("Excellent. Another matter settled exactly as planned.");
             } else {
-                System.out.println("Yes, I've corrected the mistake.");
+                System.out.println("I see, we acted too soon. I've returned it to our agenda.");
             }
             System.out.println("  " + tasks.get(index).formatForList());
         } catch (NumberFormatException e) {
-            System.out.println("Please give me a valid number.");
+            System.out.println("That number doesn't correspond to any matter on our agenda.");
         }
     }
 
@@ -166,11 +166,11 @@ public class Nicola {
             }
 
             Task removed = tasks.remove(index);
-            System.out.println("I've deleted the task.");
+            System.out.println("It's gone. You needn't concern yourself with it again.");
             System.out.println("  " + removed.formatForList());
-            System.out.println("Now you have " + tasks.size() + " tasks in your list.");
+            System.out.println("We now have " + tasks.size() + " matters requiring our attention.");
         } catch (NumberFormatException e) {
-            System.out.println("Please give me a valid task number.");
+            System.out.println("That number doesn't correspond to any matter on our agenda.");
         }
     }
 
@@ -200,11 +200,11 @@ public class Nicola {
                 .toList();
 
         if(matchingTasks.size() == 0){
-            System.out.println("Sorry, there is no matching task currently.");
+            System.out.println("How curious. I found nothing matching that description.");
             return;
         }
 
-        System.out.println("Here are the matching tasks in your list:");
+        System.out.println("These are the matters matching your inquiry:");
 
         for (int i = 0; i < matchingTasks.size(); i++) {
             System.out.println(" " + (i + 1) + "."
@@ -261,7 +261,7 @@ public class Nicola {
         commandType = command;
 
         if (command.equals("bye")) {
-            System.out.println("Bye. I'll miss you.");
+            System.out.println("Arrivederci. I'll miss you.");
             return;
         }
 
@@ -311,7 +311,7 @@ public class Nicola {
 
             case "mark":
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
+                    System.out.println("I need a task number before I can take care of that.");
                 } else {
                     markTask(tasks, details, true);
                 }
@@ -319,7 +319,7 @@ public class Nicola {
 
             case "unmark":
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
+                    System.out.println("I need a task number before I can take care of that.");
                 } else {
                     markTask(tasks, details, false);
                 }
@@ -327,7 +327,7 @@ public class Nicola {
 
             case "delete":
                 if (details.isBlank()) {
-                    System.out.println("Please give me a task number.");
+                    System.out.println("I need a task number before I can take care of that.");
                 } else {
                     deleteTask(tasks, details);
                 }
@@ -342,7 +342,7 @@ public class Nicola {
                 break;
 
             default:
-                System.out.println("Sorry, I don't understand that.\n" +
+                System.out.println("I'm afraid I don't recognize that instruction.\n" +
                         "Try list, todo, deadline, event, mark, unmark, delete, find, reminders");
                 break;
         }
@@ -358,7 +358,7 @@ public class Nicola {
         int reminderPeriod = 7;
         boolean hasReminder = false;
 
-        System.out.println("Here are your upcoming deadlines:");
+        System.out.println("A word of caution, these deadlines are approaching:");
 
         for (int i = 0; i < tasks.size(); i++) {
             Task task = tasks.get(i);
@@ -371,7 +371,7 @@ public class Nicola {
         }
 
         if (!hasReminder) {
-            System.out.println(" You have no deadlines due within the next 7 days.");
+            System.out.println("Everything is under control. No deadlines are approaching this week.");
         }
     }
 
