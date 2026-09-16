@@ -10,8 +10,8 @@ public class Ui {
     private final Scanner scanner = new Scanner(System.in);
 
     public void showWelcome() {
-        System.out.println("Hello, this is Nicola.");
-        System.out.println("How can I help you?");
+        System.out.println("Buongiorno. I'm Nicola Francesca.");
+        System.out.println("Allow me to organize your affairs.");
         System.out.println(LINE);
     }
 
