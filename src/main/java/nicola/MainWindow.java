@@ -23,7 +23,6 @@ public class MainWindow extends AnchorPane {
 
     private Nicola nicola;
 
-    private Image userImage = new Image(this.getClass().getResourceAsStream("/images/user1.jpg"));
     private Image nicolaImage = new Image(this.getClass().getResourceAsStream("/images/nicola.jpg"));
 
     @FXML
@@ -52,7 +51,7 @@ public class MainWindow extends AnchorPane {
         String commandType = nicola.getCommandType();
 
         dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
+                DialogBox.getUserDialog(input),
                 DialogBox.getNicolaDialog(
                         response,
                         nicolaImage,
