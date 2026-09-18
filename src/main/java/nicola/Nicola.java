@@ -50,6 +50,15 @@ public class Nicola {
         ui.showGoodbye();
     }
 
+    /**
+     * Prints a validation error with a prefix used by the GUI for error styling.
+     *
+     * @param message explanation of the error
+     */
+    private static void showError(String message) {
+        System.out.println("Error: " + message);
+    }
+
     private static void listTasks(TaskList tasks) {
         System.out.println("Here are the matters currently on our agenda:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -59,7 +68,7 @@ public class Nicola {
 
     private static void addTodo(TaskList tasks, String description) {
         if (tasks.isFull()) {
-            System.out.println("Your task list is full.");
+            showError("Your task list is full.");
             return;
         }
 
@@ -71,13 +80,13 @@ public class Nicola {
 
     private static void addDeadline(TaskList tasks, String payload) {
         if (tasks.isFull()) {
-            System.out.println("Your task list is full.");
+            showError("Your task list is full.");
             return;
         }
 
         String[] parts = payload.split(" /by ", 2);
         if (parts.length < 2 || parts[0].isBlank() || parts[1].isBlank()) {
-            System.out.println("The deadline needs a description and /by date.");
+            showError("The deadline needs a description and /by date.");
             return;
         }
 
@@ -92,7 +101,7 @@ public class Nicola {
         }
 
         if (dateTime == null && date == null) {
-            System.out.println("Please use a valid date like yyyy-MM-dd or yyyy-MM-dd HHmm.");
+            showError("Please use a valid date like yyyy-MM-dd or yyyy-MM-dd HHmm.");
             return;
         }
 
@@ -106,20 +115,20 @@ public class Nicola {
 
     private static void addEvent(TaskList tasks, String payload) {
         if (tasks.isFull()) {
-            System.out.println("Your task list is full.");
+            showError("Your task list is full.");
             return;
         }
 
         String[] parts = payload.split(" /from ", 2);
         if (parts.length < 2 || parts[0].isBlank()) {
-            System.out.println("The event needs a description, /from time, and /to time.");
+            showError("The event needs a description, /from time, and /to time.");
             return;
         }
 
         String description = parts[0].trim();
         String[] times = parts[1].split(" /to ", 2);
         if (times.length < 2 || times[0].isBlank() || times[1].isBlank()) {
-            System.out.println("The event needs a description, /from time, and /to time.");
+            showError("The event needs a description, /from time, and /to time.");
             return;
         }
 
@@ -127,7 +136,7 @@ public class Nicola {
         LocalDateTime to = parseDateTime(times[1].trim());
 
         if (from == null || to == null) {
-            System.out.println("Please use valid date-time values like yyyy-MM-dd HHmm.");
+            showError("Please use valid date-time values like yyyy-MM-dd HHmm.");
             return;
         }
 
@@ -141,7 +150,7 @@ public class Nicola {
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
-                System.out.println("The number has yet to be assigned a task.");
+                showError("The number has yet to be assigned a task.");
                 return;
             }
 
@@ -153,7 +162,7 @@ public class Nicola {
             }
             System.out.println("  " + tasks.get(index).formatForList());
         } catch (NumberFormatException e) {
-            System.out.println("That number doesn't correspond to any matter on our agenda.");
+            showError("That number doesn't correspond to any matter on our agenda.");
         }
     }
 
@@ -161,7 +170,7 @@ public class Nicola {
         try {
             int index = Integer.parseInt(text.trim()) - 1;
             if (index < 0 || index >= tasks.size()) {
-                System.out.println("The number has yet to be assigned a task.");
+                showError("The number has yet to be assigned a task.");
                 return;
             }
 
@@ -170,7 +179,7 @@ public class Nicola {
             System.out.println("  " + removed.formatForList());
             System.out.println("We now have " + tasks.size() + " matters requiring our attention.");
         } catch (NumberFormatException e) {
-            System.out.println("That number doesn't correspond to any matter on our agenda.");
+            showError("That number doesn't correspond to any matter on our agenda.");
         }
     }
 
@@ -287,7 +296,7 @@ public class Nicola {
 
             case "todo":
                 if (details.isBlank()) {
-                    System.out.println("The todo cannot be empty.");
+                    showError("The todo cannot be empty.");
                 } else {
                     addTodo(tasks, details);
                 }
@@ -295,7 +304,7 @@ public class Nicola {
 
             case "deadline":
                 if (details.isBlank()) {
-                    System.out.println("The deadline cannot be empty.");
+                    showError("The deadline cannot be empty.");
                 } else {
                     addDeadline(tasks, details);
                 }
@@ -303,7 +312,7 @@ public class Nicola {
 
             case "event":
                 if (details.isBlank()) {
-                    System.out.println("The event cannot be empty.");
+                    showError("The event cannot be empty.");
                 } else {
                     addEvent(tasks, details);
                 }
@@ -311,7 +320,7 @@ public class Nicola {
 
             case "mark":
                 if (details.isBlank()) {
-                    System.out.println("I need a task number before I can take care of that.");
+                    showError("I need a task number before I can take care of that.");
                 } else {
                     markTask(tasks, details, true);
                 }
@@ -319,7 +328,7 @@ public class Nicola {
 
             case "unmark":
                 if (details.isBlank()) {
-                    System.out.println("I need a task number before I can take care of that.");
+                    showError("I need a task number before I can take care of that.");
                 } else {
                     markTask(tasks, details, false);
                 }
@@ -327,7 +336,7 @@ public class Nicola {
 
             case "delete":
                 if (details.isBlank()) {
-                    System.out.println("I need a task number before I can take care of that.");
+                    showError("I need a task number before I can take care of that.");
                 } else {
                     deleteTask(tasks, details);
                 }
@@ -342,7 +351,7 @@ public class Nicola {
                 break;
 
             default:
-                System.out.println("I'm afraid I don't recognize that instruction.\n" +
+                showError("I'm afraid I don't recognize that instruction.\n" +
                         "Try list, todo, deadline, event, mark, unmark, delete, find, reminders");
                 break;
         }

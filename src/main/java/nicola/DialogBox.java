@@ -15,8 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 
 /**
- * Represents a dialog box consisting of an ImageView to represent the speaker's face
- * and a label containing text from the speaker.
+ * Represents a message with an optional avatar for Nicola's replies.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -52,8 +51,16 @@ public class DialogBox extends HBox {
         dialog.getStyleClass().add("reply-label");
     }
 
-    public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+    /**
+     * Creates a user message without reserving space for an avatar.
+     *
+     * @param text the user's command
+     * @return a text-only user dialog box
+     */
+    public static DialogBox getUserDialog(String text) {
+        var db = new DialogBox(text, null);
+        db.getChildren().remove(db.displayPicture);
+        return db;
     }
 
     /**
@@ -71,7 +78,12 @@ public class DialogBox extends HBox {
     ) {
         var db = new DialogBox(text, img);
         db.flip();
-        db.changeDialogStyle(commandType);
+        // Errors take precedence over the normal command-specific colours.
+        if (text.startsWith("Error: ")) {
+            db.dialog.getStyleClass().add("error-label");
+        } else {
+            db.changeDialogStyle(commandType);
+        }
         return db;
     }
 
